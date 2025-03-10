@@ -1,6 +1,6 @@
 # ML_BreastCancer
 
-I am going to solve a Breast Cancer Classification problem using ML. The dataset I'm gonna use is public in this same platform: [dataset](https://raw.githubusercontent.com/selva86/datasets/refs/heads/master/BreastCancer.csv)
+I am going to solve a Breast Cancer Classification problem using ML. The dataset I'm gonna use is public in this same platform: [dataset](https://github.com/selva86/datasets/blob/master/BreastCancer.csv)
 
 The folder structure is as follows:
 1. src/data_sample: los archivos de datos de muestra utilizados en el proyecto que permitan ejecutar el código. [Recuerda no subir a GitHub archivos demasiado pesados]
