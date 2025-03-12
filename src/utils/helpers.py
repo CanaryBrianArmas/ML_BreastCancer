@@ -1,16 +1,22 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 def load_data(sample_path):
     """Load sample dataset"""
     return pd.read_csv(sample_path)
+
 
 def split_data(df, target_col, test_size=0.2, random_state=42):
     """Split data into train and test sets"""
     X = df.drop(target_col, axis=1)
     y = df[target_col]
     return train_test_split(X, y, test_size=test_size, random_state=random_state)
+
 
 def evaluate_model(model, X_test, y_test):
     """Evaluate model performance"""
@@ -28,3 +34,22 @@ def evaluate_model(model, X_test, y_test):
         metrics["ROC-AUC"] = roc_auc_score(y_test, y_proba)
     
     return metrics
+
+
+def create_pipeline(classifier):
+    """Create preprocessing and modeling pipeline with imputation"""
+    
+     # 1. Imputación solo para la columna problemática
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('imputer', SimpleImputer(strategy='median'), ['Bare.nuclei'])  # Columna con nulos
+        ],
+        remainder='passthrough'  # Pasa el resto de columnas sin cambios
+    )
+    
+    # 2. Pipeline completa
+    return Pipeline([
+        ('preprocessor', preprocessor),
+        ('scaler', StandardScaler()),  # Escala todas las columnas
+        ('classifier', classifier)
+    ])
