@@ -7,19 +7,48 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 def load_data(sample_path):
-    """Load sample dataset"""
+    """
+    Load dataset
+
+    Parameters:
+    sample_path(str): path to the file
+
+    Returns:
+    pd.DataFrame 
+    """
     return pd.read_csv(sample_path)
 
 
 def split_data(df, target_col, test_size=0.2, random_state=42):
-    """Split data into train and test sets"""
+    """
+    Split data into train and test sets
+    
+    Parameters:
+    df(Dataframe): dataframe
+    target_col(str): col of the dataframe
+    test_size(float): % of the test 
+
+    Returns:
+    X_train, y_train, X_test, y_test
+
+    """
     X = df.drop(target_col, axis=1)
     y = df[target_col]
-    return train_test_split(X, y, test_size=test_size, random_state=random_state)
+    return train_test_split(X, y, test_size=test_size, random_state=random_state, stratify=y)
 
 
 def evaluate_model(model, X_test, y_test):
-    """Evaluate model performance"""
+    """
+    Evaluate model performance
+
+    Parameters:
+    model(Pipeline): the model create within the pipeline
+    X_test(pd.DataFrame): X_test data
+    y_test(pd.DataFrame): y_test data
+
+    Returns:
+    metrics(dict): The defined metrics for the model passed 
+    """
     y_pred = model.predict(X_test)
     y_proba = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
     
@@ -37,12 +66,20 @@ def evaluate_model(model, X_test, y_test):
 
 
 def create_pipeline(classifier):
-    """Create preprocessing and modeling pipeline with imputation"""
+    """
+    Create preprocessing and modeling pipeline with imputation
+
+    Parameters:
+    classifier(sklearn.model): A ML model
+
+    Returns:
+    The Pipeline created containing the model 
+    """
     
      # 1. Imputación solo para la columna problemática
     preprocessor = ColumnTransformer(
         transformers=[
-            ('imputer', SimpleImputer(strategy='median'), ['Bare.nuclei'])  # Columna con nulos
+            ('imputer', SimpleImputer(strategy='median'), ['Bare.nuclei']) # Columna con nulos
         ],
         remainder='passthrough'  # Pasa el resto de columnas sin cambios
     )
